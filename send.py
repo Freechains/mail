@@ -20,7 +20,7 @@ class Server (SMTPServer):
         f.write(data)
         f.close()
         print('%s saved.' % filename)
-        cmd = ["freechains","--sign="+PVT,"chain","post","/mail","file","utf8",filename]
+        cmd = ["freechains","--sign="+PVT,"chain","post","/mail","file",filename]
         print(' '.join(cmd))
         #time.sleep(2)
         subprocess.run(cmd)

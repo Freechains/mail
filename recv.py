@@ -10,18 +10,19 @@ STATE = {
 }
 
 if not os.path.isfile(JSON):
+    fc = subprocess.Popen(["freechains","chain","genesis","/mail"], stdout=subprocess.PIPE)
+    STATE['heads'].append(fc.stdout.read().decode("utf-8"))
     with open(JSON,'w') as f:
         json.dump(STATE, f)
 
 with open('state.json','r') as f:
     STATE = json.load(f)
 
-fc = subprocess.Popen(["freechains","chain","heads","linked","/mail"], stdout=subprocess.PIPE)
-heads = fc.stdout.read().decode("utf-8").split()
+olds = ' '.join(STATE['heads'])
+fc   = subprocess.Popen(["freechains","chain","traverse","/mail","all",olds], stdout=subprocess.PIPE)
+news = fc.stdout.read().decode("utf-8").split()
 
-for h in heads:
-    if h in STATE['heads']:
-        break
+for h in news:
     print(h)
     fc = subprocess.Popen(["freechains","chain","get","/mail",h], stdout=subprocess.PIPE)
     js = fc.stdout.read()
@@ -30,6 +31,6 @@ for h in heads:
         f.write(py['pay'])
     subprocess.run(["./eml2mbox.py","tmp.eml","/var/mail/chico"])
 
-STATE['heads'] = heads
+STATE['heads'] = news
 with open(JSON,'w') as f:
     json.dump(STATE, f)
