@@ -32,18 +32,15 @@ else:
     news = out.split(' ')
 
 for h in news:
-    print(">>>>>>>>>>>>>>>>>>>")
-    print(h)
+    print("receiving: " + h)
     cmd = ["freechains","chain","get","/mail",h]
-    print("cmd: " + ' '.join(cmd))
+    #print("cmd: " + ' '.join(cmd))
     proc = subprocess.Popen(cmd, bufsize=0,stdout=subprocess.PIPE)
     js   = proc.stdout.read().decode("utf-8").rstrip()
-    print("js: " + js)
     py  = json.loads(js)
     with open('tmp.eml','w') as f:
         f.write(py['pay'])
     subprocess.run(["./eml2mbox.py","tmp.eml","/var/mail/chico"])
-    print("<<<<<<<<<<<<<<<<<<<")
 
 proc  = subprocess.Popen(["freechains","chain","heads","/mail","all"], stdout=subprocess.PIPE)
 heads = proc.stdout.read().decode("utf-8").rstrip().split(' ')
