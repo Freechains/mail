@@ -10,8 +10,12 @@ STATE = {
 }
 
 if not os.path.isfile(JSON):
-    fc = subprocess.Popen(["freechains","chain","genesis","/mail"], stdout=subprocess.PIPE)
-    STATE['heads'].append(fc.stdout.read().decode("utf-8"))
+    cmd  = ["freechains","chain","genesis","/mail"]
+    #print(' '.join(cmd))
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    gen  = proc.stdout.read().decode("utf-8").rstrip()
+    assert gen != ''
+    STATE['heads'] = [gen]
     with open(JSON,'w') as f:
         json.dump(STATE, f)
 
@@ -19,18 +23,30 @@ with open('state.json','r') as f:
     STATE = json.load(f)
 
 olds = ' '.join(STATE['heads'])
-fc   = subprocess.Popen(["freechains","chain","traverse","/mail","all",olds], stdout=subprocess.PIPE)
-news = fc.stdout.read().decode("utf-8").split()
+proc = subprocess.Popen(["freechains","chain","traverse","/mail","all",olds], stdout=subprocess.PIPE)
+
+out = proc.stdout.read().decode("utf-8").rstrip()
+if out == '':
+    news = []
+else:
+    news = out.split(' ')
 
 for h in news:
+    print(">>>>>>>>>>>>>>>>>>>")
     print(h)
-    fc = subprocess.Popen(["freechains","chain","get","/mail",h], stdout=subprocess.PIPE)
-    js = fc.stdout.read()
-    py = json.loads(js)
+    cmd = ["freechains","chain","get","/mail",h]
+    print("cmd: " + ' '.join(cmd))
+    proc = subprocess.Popen(cmd, bufsize=0,stdout=subprocess.PIPE)
+    js   = proc.stdout.read().decode("utf-8").rstrip()
+    print("js: " + js)
+    py  = json.loads(js)
     with open('tmp.eml','w') as f:
         f.write(py['pay'])
     subprocess.run(["./eml2mbox.py","tmp.eml","/var/mail/chico"])
+    print("<<<<<<<<<<<<<<<<<<<")
 
-STATE['heads'] = news
+proc  = subprocess.Popen(["freechains","chain","heads","/mail","all"], stdout=subprocess.PIPE)
+heads = proc.stdout.read().decode("utf-8").rstrip().split(' ')
+STATE['heads'] = heads
 with open(JSON,'w') as f:
     json.dump(STATE, f)
