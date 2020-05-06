@@ -17,6 +17,8 @@ $ ./emlToMbox.py input.eml output.mbox
 Requires Python 2.5 or later
 
 STATUS:  Tested and appears to work.
+
+https://gist.github.com/kadin2048/c332a572a388acc22d56
 """
 
 import os

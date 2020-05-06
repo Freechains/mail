@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+TODO
+- periodic recv (via TB?)
+- multiple chains
+- set from, sign, hash, etc
+- set mail account
+"""
+
 import os.path
 import subprocess
 import json
@@ -23,7 +31,9 @@ with open('state.json','r') as f:
     STATE = json.load(f)
 
 olds = ' '.join(STATE['heads'])
-proc = subprocess.Popen(["freechains","chain","traverse","/mail","all",olds], stdout=subprocess.PIPE)
+cmd  = ["freechains","chain","traverse","/mail","all",olds]
+#print("cmd: " + ' '.join(cmd))
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 
 out = proc.stdout.read().decode("utf-8").rstrip()
 if out == '':

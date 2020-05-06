@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# https://stackoverflow.com/a/44498100/8334616
+
 from datetime import datetime
 import asyncore
 import sys
@@ -8,7 +10,10 @@ from smtpd import SMTPServer
 
 import subprocess
 
-PVT = sys.argv[1]
+if len(sys.argv) > 1:
+    PVT = sys.argv[1]
+else:
+    PVT = input('Type your private key to sign all messages: ')
 
 class Server (SMTPServer):
     no = 0
