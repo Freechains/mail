@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+CHAIN = "/mail"
+
 # https://stackoverflow.com/a/44498100/8334616
 
 from datetime import datetime
@@ -25,7 +27,7 @@ class Server (SMTPServer):
         f.write(data)
         f.close()
         print('%s saved.' % filename)
-        cmd = ["freechains","--sign="+PVT,"chain","post","/mail","file",filename]
+        cmd = ["freechains","--sign="+PVT,"chain","post",CHAIN,"file",filename]
         print(' '.join(cmd))
         #time.sleep(2)
         subprocess.run(cmd)
