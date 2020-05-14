@@ -11,6 +11,10 @@ You will need the following set of tools:
 - `send.py`: an SMTP server to intercept sends and redirect to a chain
 - `recv.py`: a script to read a chain to a mailbox.
 
+*Disclaimer*: This tool is mostly a hack to show a proof of concept of how a
+rich UI could be available in Freechains with support for threaded view, text
+formatting, inlined images, and file attachments.
+
 ## Setup
 
 - Thunderbird:
