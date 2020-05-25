@@ -46,13 +46,12 @@ else:
 
 for h in news:
     print("receiving: " + h)
-    cmd = ["freechains","chain","get",CHAIN,h]
+    cmd = ["freechains","chain","get",CHAIN,"payload",h]
     #print("cmd: " + ' '.join(cmd))
     proc = subprocess.Popen(cmd, bufsize=0,stdout=subprocess.PIPE)
-    js   = proc.stdout.read().decode("utf-8").rstrip()
-    py  = json.loads(js)
+    pay  = proc.stdout.read().decode("utf-8").rstrip()
     with open('tmp.eml','w') as f:
-        f.write(py['pay'])
+        f.write(pay)
     subprocess.run(["./eml2mbox.py","tmp.eml","/var/mail/"+USER])
 
 proc  = subprocess.Popen(["freechains","chain","heads",CHAIN,"all"], stdout=subprocess.PIPE)
